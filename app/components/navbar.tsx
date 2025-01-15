@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
 
-const navbar = () => {
+const Navbar = () => {
     return (
         <div className="navbar bg-base-100">
-            <div className="flex-1">
+            {/* Logo Section */}
+            <div className="flex-1 flex items-center">
                 <Image
                     src="/co-logo.png"
                     width={80}
@@ -23,23 +24,72 @@ const navbar = () => {
                 </a>
             </div>
 
+            {/* Navigation Menu */}
             <div className="flex-none">
-                <ul className="menu menu-horizontal px-1">
+                <ul className="menu menu-horizontal px-1 flex items-center">
                     <li>
-                        <a>Link</a>
+                        <a
+                            href="#"
+                            className="text-black active:text-white"
+                            style={{
+                                fontFamily: '"Barlow", sans-serif',
+                                fontSize: "16px",
+                                marginRight: "5px",
+                            }}
+                        >
+                            Home
+                        </a>
                     </li>
                     <li>
-                        <details>
-                            <summary>Parent</summary>
-                            <ul className="bg-base-100 rounded-t-none p-2">
-                                <li>
-                                    <a>Link 1</a>
-                                </li>
-                                <li>
-                                    <a>Link 2</a>
-                                </li>
-                            </ul>
-                        </details>
+                        <a
+                            href="#"
+                            className="text-black active:text-white"
+                            style={{
+                                fontFamily: '"Barlow", sans-serif',
+                                fontSize: "16px",
+                                marginRight: "5px",
+                            }}
+                        >
+                            Services
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            className="text-black active:text-white"
+                            style={{
+                                fontFamily: '"Barlow", sans-serif',
+                                fontSize: "16px",
+                                marginRight: "5px",
+                            }}
+                        >
+                            Pricing
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            className="text-black active:text-white"
+                            style={{
+                                fontFamily: '"Barlow", sans-serif',
+                                fontSize: "16px",
+                                marginRight: "5px",
+                            }}
+                        >
+                            About Us
+                        </a>
+                    </li>
+                    <li>
+                        <button
+                            className="btn"
+                            style={{
+                                fontSize: "18px",
+                                color: "#FFFFFF",
+                                background: "#C4986A",
+                            }}
+                        >
+                            Log In
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -47,4 +97,4 @@ const navbar = () => {
     );
 };
 
-export default navbar;
+export default Navbar;
