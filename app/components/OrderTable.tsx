@@ -9,14 +9,14 @@ export default function OrderTable() {
     return (
       <table className="w-full border-collapse border">
         <thead>
-          <tr className="bg-gray-200">
+          <tr className="bg-lime-200">
             <th className="p-2">Customer Name</th>
             <th className="p-2">Parcel ID</th>
             <th className="p-2">Location</th>
             <th className="p-2">Delivery Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {orders.map((order, index) => (
             <tr key={index} className="border-t">
               <td className="p-2">{order.name}</td>
