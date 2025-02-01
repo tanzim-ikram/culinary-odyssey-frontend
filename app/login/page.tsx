@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation"; // Updated import
-import Navbar from "@/app/components/navbar";
-import Footer from "@/app/components/footer";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 
 const Login = () => {
   const [email, setEmail] = useState("");
