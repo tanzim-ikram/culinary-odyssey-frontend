@@ -4,7 +4,9 @@ import { HiOutlineSearch } from "react-icons/hi";
 import Sidebar from "@/app/components/Sidebar";
 import DashboardCard from "@/app/components/DashboardCard";
 import OrderTable from "@/app/components/OrderTable";
-import OrderChart from "@/app/components/OrderChart"; // ✅ Import OrderChart
+import OrderChart from "@/app/components/OrderChart";
+import ShoppingList from "@/app/components/ShoppingList";
+import MapLocations from "@/app/components/MapLocations";
 
 export default function Dashboard() {
   return (
@@ -57,7 +59,6 @@ export default function Dashboard() {
               <h2 className="text-xl font-bold text-[#464255]" style={{ fontFamily: '"Barlow", sans-serif' }}>
                 Active Orders
               </h2>
-
               <a href="#" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "normal" }}>
                 View all
               </a>
@@ -71,6 +72,12 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow">
             <OrderChart />
           </div>
+        </div>
+
+        {/* Shopping List & Map Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <ShoppingList />
+          <MapLocations />
         </div>
       </div>
     </div>
