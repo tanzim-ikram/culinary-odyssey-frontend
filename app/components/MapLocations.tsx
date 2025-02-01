@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import L, { LatLngExpression } from "leaflet"; // ✅ Import Leaflet
+import L, { LatLngExpression } from "leaflet";
 
 // Import react-leaflet components dynamically to prevent SSR issues
 const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
