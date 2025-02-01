@@ -37,7 +37,7 @@ export default function Sidebar() {
       </div>
 
       {/* Menu */}
-      <nav className="space-y-4">
+      <nav className="space-y-4" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "normal" }}>
         <SidebarLink icon={FaChartPie} text="Dashboard" active />
         <SidebarLink icon={IoDocumentText } text="Order Detail" />
         <SidebarLink icon={FaUser} text="Customer" />

@@ -7,7 +7,7 @@ export default function OrderTable() {
     ];
   
     return (
-      <table className="w-full border-collapse border">
+      <table className="w-full border-collapse border" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "normal" }}>
         <thead>
           <tr className="bg-lime-200">
             <th className="p-2">Customer Name</th>
