@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { FaBell, FaRegCommentDots, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaRegCommentDots, FaUserCircle, FaBoxes } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
 // import { IoDocumentTextOutline } from "react-icons/io5";
 import Sidebar from "@/app/components/Sidebar"; 
@@ -45,9 +45,9 @@ export default function Dashboard() {
 
         {/* Dashboard Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <DashboardCard title="Total Delivered" count="357" icon="/icons/delivered.png" />
-          <DashboardCard title="Pending Delivery" count="75" icon="/icons/pending.png" />
-          <DashboardCard title="Delivery in Progress" count="28" icon="/icons/in-progress.png" />
+          <DashboardCard title="Total Delivered" count="357" icon="/icons/boxes.png" />
+          <DashboardCard title="Pending Delivery" count="75" icon="/icons/preorder.png" />
+          <DashboardCard title="Delivery in Progress" count="28" icon="/icons/delivery-truck.png" />
           <DashboardCard title="Failed Delivery" count="65" icon="/icons/failed.png" />
         </div>
 
