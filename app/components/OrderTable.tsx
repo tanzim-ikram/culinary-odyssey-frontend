@@ -4,6 +4,12 @@ export default function OrderTable() {
       { name: "Fariha", id: "CODA2H", location: "Badda", status: "Pending" },
       { name: "Noor", id: "CO88Z0", location: "Khilkhet", status: "In Progress" },
       { name: "Rahat", id: "COFDT8", location: "Mohammadpur", status: "Failed" },
+      { name: "Ahnaf", id: "COA98D", location: "Kuratoli", status: "Delivered" },
+      { name: "Fariha", id: "CODA2H", location: "Badda", status: "Pending" },
+      { name: "Noor", id: "CO88Z0", location: "Khilkhet", status: "In Progress" },
+      { name: "Rahat", id: "COFDT8", location: "Mohammadpur", status: "Failed" },
+      { name: "Noor", id: "CO88Z0", location: "Khilkhet", status: "In Progress" },
+      { name: "Rahat", id: "COFDT8", location: "Mohammadpur", status: "Failed" },
     ];
   
     return (

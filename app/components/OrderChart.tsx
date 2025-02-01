@@ -15,7 +15,7 @@ const data = [
 
 export default function OrderChart() {
   return (
-    <div >
+    <div className="bg-white p-6 rounded-lg shadow">
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <div style={{ fontFamily: '"Barlow", sans-serif' }}>

@@ -20,7 +20,7 @@ interface SidebarLinkProps {
 }
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-white h-screen p-6 shadow-lg">
+    <aside className="w-64 bg-white p-6 shadow-lg">
       {/* Logo */}
       <div className="flex items-center gap-3 mb-6">
         <Image src="/co-logo.png" alt="Logo" width={80} height={80} />
