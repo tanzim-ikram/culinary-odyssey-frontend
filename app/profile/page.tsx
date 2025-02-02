@@ -6,10 +6,14 @@ import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { FaCamera } from "react-icons/fa";
 import Image from "next/image";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function Profile() {
+  const router = useRouter();
   const [profileImage, setProfileImage] = useState("/co-logo.png");
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,24 +26,23 @@ export default function Profile() {
     educationalLevel: "",
   });
 
-  const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
-
-  // Fetch user data on component mount
+  // ✅ Fetch user data on component mount
   useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+
+    if (!storedToken) {
+      console.error("No access token found! Redirecting to login...");
+      router.push("/login");
+      return;
+    }
+
+    setToken(storedToken); // ✅ Store Token in State
+
     const fetchProfile = async () => {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        console.error("No access token found! Redirecting to login...");
-        router.push("/login");
-        return;
-      }
-
       try {
         const response = await axios.get("http://localhost:5000/profile/me", {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true, // Ensures cookies are sent
+          headers: { Authorization: `Bearer ${storedToken}` },
+          withCredentials: true,
         });
 
         const userData = response.data;
@@ -66,16 +69,14 @@ export default function Profile() {
     };
 
     fetchProfile();
-  }, []);
+  }, [router]);
 
-  // Handle input changes
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  // ✅ Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle image selection
+  // ✅ Handle image selection
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const imageUrl = URL.createObjectURL(event.target.files[0]);
@@ -83,10 +84,9 @@ export default function Profile() {
     }
   };
 
-  // Handle profile update
+  // ✅ Handle profile update
   const handleUpdate = async () => {
     setUpdating(true);
-    const token = localStorage.getItem("accessToken");
 
     try {
       await axios.patch(
@@ -118,13 +118,8 @@ export default function Profile() {
   };
 
   if (loading) {
-    return (
-      <p className="text-center mt-10 text-xl font-semibold">
-        Loading profile...
-      </p>
-    );
+    return <p className="text-center mt-10 text-xl font-semibold">Loading profile...</p>;
   }
-
   return (
     <div className="flex bg-gray-100 min-h-screen">
       {/* Sidebar */}
@@ -133,7 +128,7 @@ export default function Profile() {
       {/* Main Content */}
       <div className="flex-1 p-6">
         {/* Topbar Component */}
-        <Topbar userName={formData.firstName} />
+        <Topbar token={token} />
 
         {/* Profile Header */}
         <div className="bg-white p-6 rounded-lg shadow-lg">

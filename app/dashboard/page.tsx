@@ -10,43 +10,52 @@ import MapLocations from "@/app/components/MapLocations";
 
 export default function Dashboard() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [dashboardData, setDashboardData] = useState<any>(null);
   const [shoppingLists, setShoppingLists] = useState<any[]>([]);
+  const [token, setToken] = useState<string | null>(null);
 
   // Function to check authentication
   const checkAuth = async () => {
-    const token = localStorage.getItem("accessToken");
+    const storedToken = localStorage.getItem("accessToken");
 
-    if (!token) {
+    if (!storedToken) {
       console.warn("No access token found! Redirecting to login...");
       router.push("/login");
       return;
     }
 
+    setToken(storedToken); // ✅ Store Token in State
+
     try {
       const response = await axios.get("http://localhost:5000/dashboard", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${storedToken}` },
         withCredentials: true,
       });
 
       console.log("Dashboard Data:", response.data);
       setDashboardData(response.data);
-      setShoppingLists(response.data?.topShoppingLists || []);
-      setIsAuthenticated(true);
+
+      // ✅ FIX: Update shopping list state when dashboard data is fetched
+      if (response.data.topShoppingLists) {
+        setShoppingLists(response.data.topShoppingLists);
+      }
     } catch (error: any) {
-      console.error(
-        "Authentication failed:",
-        error.response?.data || error.message
-      );
+      console.error("Authentication failed:", error.response?.data || error.message);
       localStorage.removeItem("accessToken"); // Remove invalid token
       router.push("/login"); // Redirect to login
     }
   };
 
+  // ✅ FIX: Ensure shoppingLists updates when dashboardData changes
+  useEffect(() => {
+    if (dashboardData?.topShoppingLists) {
+      setShoppingLists(dashboardData.topShoppingLists);
+    }
+  }, [dashboardData]);
+
   // Function to delete an item from the shopping list
   const handleDeleteItem = async (id: number) => {
-    const token = localStorage.getItem("accessToken");
+    if (!token) return;
 
     try {
       await axios.delete(`http://localhost:5000/shoppinglist/${id}`, {
@@ -54,18 +63,13 @@ export default function Dashboard() {
         withCredentials: true,
       });
 
-      // Remove item from the frontend state only if API deletion is successful
+      // ✅ FIX: Update shoppingLists state after deletion
       setShoppingLists((prev) => prev.filter((item) => item.id !== id));
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        console.error(
-          "Failed to delete item:",
-          error.response?.data || error.message
-        );
-      } else if (error instanceof Error) {
-        console.error("Failed to delete item:", error.message);
+        console.error("Failed to delete item:", error.response?.data || error.message);
       } else {
-        console.error("Failed to delete item: An unknown error occurred.");
+        console.error("Failed to delete item:", error);
       }
     }
   };
@@ -75,12 +79,8 @@ export default function Dashboard() {
     checkAuth();
   }, []);
 
-  if (!isAuthenticated) {
-    return (
-      <p className="text-center mt-10 text-xl font-semibold">
-        Redirecting to login...
-      </p>
-    );
+  if (!dashboardData) {
+    return <p className="text-center mt-10 text-xl font-semibold">Loading dashboard...</p>;
   }
 
   return (
@@ -94,7 +94,7 @@ export default function Dashboard() {
         style={{ fontFamily: '"Barlow", sans-serif' }}
       >
         {/* Top Navbar */}
-        <Topbar userName={dashboardData?.user?.firstName || "User"} />
+        <Topbar token={token} />
 
         {/* Dashboard Header */}
         <div className="flex justify-between items-center mb-6">
@@ -202,7 +202,6 @@ export default function Dashboard() {
         {/* Shopping List & Map Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Shopping List */}
-          
           <div className="bg-white p-6 rounded-lg shadow">
           <div className="flex flex-row items-baseline justify-between">
               <h2 className="text-xl font-bold mb-4">Shopping List</h2>

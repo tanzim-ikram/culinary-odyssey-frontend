@@ -1,25 +1,56 @@
 "use client";
 
-import { FaBell, FaRegCommentDots, FaUserCircle } from "react-icons/fa";
-import { HiOutlineSearch } from "react-icons/hi";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
 export default function Customer() {
-  const customers = [
-    { name: "Ahnaf", address: "Kuratoli", phone: "017XXXXXXXX" },
-    { name: "Fariha", address: "Badda", phone: "017XXXXXXXX" },
-    { name: "Noor", address: "Khilkhet", phone: "017XXXXXXXX" },
-    { name: "Ishita", address: "Badda", phone: "017XXXXXXXX" },
-    { name: "Farhana", address: "Nikunjo", phone: "017XXXXXXXX" },
-    { name: "Rafsan", address: "Uttara", phone: "017XXXXXXXX" },
-    { name: "Rahat", address: "Mohammadpur", phone: "017XXXXXXXX" },
-    { name: "Rakib", address: "Kuratoli", phone: "017XXXXXXXX" },
-    { name: "Foysal", address: "Mirpur", phone: "017XXXXXXXX" },
-    { name: "Mamun", address: "Bashundhara", phone: "017XXXXXXXX" },
-    { name: "Abir", address: "Mohammadpur", phone: "017XXXXXXXX" },
-    { name: "Saba", address: "Uttara", phone: "017XXXXXXXX" },
-  ];
+  const router = useRouter();
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+
+  // ✅ Fetch Customers from API
+  const fetchCustomers = async (authToken: string) => {
+    try {
+      const response = await axios.get("http://localhost:5000/customers", {
+        headers: { Authorization: `Bearer ${authToken}` },
+        withCredentials: true,
+      });
+
+      setCustomers(response.data); // ✅ Set API Response Data
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        console.error("Unauthorized: Redirecting to login.");
+        localStorage.removeItem("accessToken"); // Remove invalid token
+        router.push("/login"); // Redirect to login
+      } else {
+        console.error("Customer fetch error:", error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch token & customers on component mount
+  useEffect(() => {
+    const authToken = localStorage.getItem("accessToken");
+
+    if (!authToken) {
+      console.warn("No access token found! Redirecting to login...");
+      router.push("/login");
+      return;
+    }
+
+    setToken(authToken); // ✅ Set token state
+    fetchCustomers(authToken); // ✅ Fetch customers
+  }, []);
+
+  if (loading) {
+    return <p className="text-center mt-10 text-xl font-semibold">Loading customers...</p>;
+  }
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -28,18 +59,15 @@ export default function Customer() {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-        {/* Top Navbar */}
-        <Topbar />
+        {/* ✅ Pass token to Topbar */}
+        {token && <Topbar token={token} />}
 
         {/* Customer Table */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h1 className="text-2xl font-bold text-[#464255] mb-6" style={{ fontFamily: '"Barlow", sans-serif' }}>
             Customer Details
           </h1>
-          <table
-            className="w-full border border-gray-300 rounded-lg"
-            style={{ fontFamily: '"Barlow", sans-serif' }}
-          >
+          <table className="w-full border border-gray-300 rounded-lg" style={{ fontFamily: '"Barlow", sans-serif' }}>
             <thead>
               <tr className="bg-lime-200 text-left">
                 <th className="p-3 font-bold text-[#464255]">Customer Name</th>
@@ -49,18 +77,26 @@ export default function Customer() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {customers.map((customer, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-3">{customer.name}</td>
-                  <td className="p-3">{customer.address}</td>
-                  <td className="p-3">{customer.phone}</td>
-                  <td className="p-3">
-                    <button className="px-4 py-1 text-green-600 border border-green-600 rounded-full hover:bg-green-100">
-                      Chat
-                    </button>
+              {customers.length > 0 ? (
+                customers.map((customer, index) => (
+                  <tr key={index} className="border-t">
+                    <td className="p-3">{customer.customerName}</td>
+                    <td className="p-3">{customer.address}</td>
+                    <td className="p-3">{customer.phoneNumber}</td>
+                    <td className="p-3">
+                      <button className="px-4 py-1 text-green-600 border border-green-600 rounded-full hover:bg-green-100">
+                        Chat
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="text-center p-4 text-gray-500">
+                    No customers found.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

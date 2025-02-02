@@ -1,16 +1,40 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { FaBell, FaRegCommentDots } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface TopbarProps {
-  userName: string;
+  token: string | null;
 }
 
-export default function Topbar({ userName }: TopbarProps) {
+export default function Topbar({ token }: TopbarProps) {
   const router = useRouter();
+  const [userName, setUserName] = useState<string>("User");
+
+  // Fetch User Profile Data
+  const fetchProfile = async () => {
+    if (!token) return;
+
+    try {
+      const response = await axios.get("http://localhost:5000/profile/me", {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      const { firstName, lastName } = response.data;
+      setUserName(`${firstName} ${lastName}`);
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, [token]);
 
   return (
     <div className="flex justify-between items-center mb-6">
@@ -32,7 +56,7 @@ export default function Topbar({ userName }: TopbarProps) {
         {/* User Profile */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/profile")}>
           <div>
-            <p className="text-gray-700 font-semibold">{userName || "User"}</p>
+            <p className="text-gray-700 font-semibold">{userName}</p>
             <p className="text-sm text-green-500">Online</p>
           </div>
           <Image
