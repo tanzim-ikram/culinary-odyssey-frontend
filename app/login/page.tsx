@@ -1,6 +1,9 @@
 "use client";
+
+import Image from "next/image";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Updated import
+import { useRouter } from "next/navigation";
+import axios from "axios";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 
@@ -8,35 +11,69 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter(); // Using the updated next/navigation useRouter
+  const router = useRouter();
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault(); // Prevent default form submission
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
     try {
-      const response = await fetch("/api/signin", {
-        //   const response = await fetch('http://localhost:5000/signin', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await axios.post("/api/signin", {
+        email,
+        password,
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Login successful, redirect to dashboard
+  
+      if (response.status === 200) {
+        const { message, accessToken, user } = response.data;
+        const { id: userId, role } = user;
+  
+        console.log("Login successful:", message);
+        console.log("Access Token:", accessToken);
+        console.log("User ID:", userId, "Role:", role);
+  
+        if (!accessToken) {
+          console.error("No access token received!");
+          setErrorMessage("Authentication failed. No access token.");
+          return;
+        }
+  
+        // Store token & user data in localStorage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("userId", userId.toString());
+        localStorage.setItem("userRole", role);
+  
+        // Verify stored token
+        console.log("Stored Access Token:", localStorage.getItem("accessToken"));
+  
+        // Redirect user to dashboard
         router.push("/dashboard");
-      } else {
-        // Handle login error
-        setErrorMessage(data.message || "Login failed. Please try again.");
       }
-    } catch (error) {
-      setErrorMessage("An error occurred while logging in. Please try again.");
+    } catch (error: any) {
+      if (error.response) {
+        setErrorMessage(error.response.data.message || "Invalid credentials");
+      } else {
+        setErrorMessage("An error occurred while logging in. Please try again.");
+      }
       console.error("Login error:", error);
     }
   };
+const fetchDashboardData = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No access token found!");
+
+    const response = await axios.get("/api/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true, // Ensures cookies are sent
+    });
+
+    console.log("Dashboard Data:", response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error("Dashboard API error:", error.response || error.message);
+  }
+};  
 
   return (
     <div>
@@ -45,8 +82,11 @@ const Login = () => {
       <hr />
 
       {/* Login Card */}
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center min-h-screen bg-gray-50" style={{ fontFamily: '"Poppins", sans-serif' }}>
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+          <a href="/" className="flex justify-center mb-6">
+            <Image src="/user-1.png" alt="Logo" width={120} height={120} />
+          </a>
           <h2 className="text-2xl font-semibold text-center text-gray-800">
             Log In to Your Account
           </h2>
@@ -65,7 +105,7 @@ const Login = () => {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-teal-300"
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-lime-200"
                 placeholder="Email Address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -81,7 +121,7 @@ const Login = () => {
               <input
                 type="password"
                 id="password"
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-teal-300"
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring focus:ring-lime-200"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

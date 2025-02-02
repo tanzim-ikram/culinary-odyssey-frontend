@@ -176,8 +176,8 @@ export default function Profile() {
               <label className="block text-[#464255] text-sm font-medium mb-1">Education Level</label>
               <select name="education" value={formData.education} onChange={handleChange} className="w-full border border-gray-300 p-2 rounded-lg">
                 <option>Higher Secondary Certificate (HSC)</option>
-                <option>Bachelor’s Degree</option>
-                <option>Master’s Degree</option>
+                <option>Bachelor's Degree</option>
+                <option>Master's Degree</option>
               </select>
             </div>
           </div>
