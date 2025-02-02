@@ -3,12 +3,24 @@
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
+import { useEffect, useState } from "react";
 
 // Import react-leaflet components dynamically to prevent SSR issues
-const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
-const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
-const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(() => import("react-leaflet").then((mod) => mod.Popup), {
+  ssr: false,
+});
 
 // Fix missing marker icon by setting it manually
 const defaultIcon = L.icon({
@@ -17,34 +29,51 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41], // Anchor point
 });
 
-const mapCenter: LatLngExpression = [37.7749, -122.4194]; // San Francisco as default center
+// Dictionary of known locations with lat/lng
+const locationsDictionary: Record<string, LatLngExpression> = {
+  Dhaka: [23.8103, 90.4125],
+  Chattogram: [22.3569, 91.7832],
+  Sylhet: [24.8949, 91.8687],
+  Rajshahi: [24.3745, 88.6042],
+  Khulna: [22.8456, 89.5403],
+  Barishal: [22.701, 90.3535],
+  Jashore: [23.1664, 89.2081],
+  Mymensingh: [24.7471, 90.4203],
+  Bogura: [24.8481, 89.3724],
+};
 
-const locations = [
-  { lat: 40.7128, lng: -74.0060, name: "New York" },
-  { lat: 34.0522, lng: -118.2437, name: "Los Angeles" },
-  { lat: 41.8781, lng: -87.6298, name: "Chicago" },
-  { lat: 29.7604, lng: -95.3698, name: "Houston" },
-];
+interface MapLocationsProps {
+  locations: string[]; // Expecting an array of location names
+}
 
-export default function MapLocations() {
+export default function MapLocations({ locations }: MapLocationsProps) {
+  const [validLocations, setValidLocations] = useState<
+    { name: string; latLng: LatLngExpression }[]
+  >([]);
+
+  useEffect(() => {
+    const filteredLocations = locations
+      .map((loc) => ({
+        name: loc,
+        latLng: locationsDictionary[loc],
+      }))
+      .filter((loc) => loc.latLng !== undefined);
+
+    setValidLocations(filteredLocations);
+  }, [locations]);
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-[#464255]" style={{ fontFamily: '"Barlow", sans-serif' }}>
-          Locations
-        </h2>
-        <a href="/map" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif' }}>
-          Open map
-        </a>
-      </div>
-
+    <div>
       {/* Map */}
       <div className="h-60 w-full rounded-lg overflow-hidden">
-        <MapContainer center={mapCenter} zoom={4} className="h-full w-full">
+        <MapContainer
+          center={[23.8103, 90.4125]}
+          zoom={6}
+          className="h-full w-full"
+        >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {locations.map((loc, index) => (
-            <Marker key={index} position={[loc.lat, loc.lng] as LatLngExpression} icon={defaultIcon}>
+          {validLocations.map((loc, index) => (
+            <Marker key={index} position={loc.latLng} icon={defaultIcon}>
               <Popup>{loc.name}</Popup>
             </Marker>
           ))}

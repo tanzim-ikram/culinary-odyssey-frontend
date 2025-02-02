@@ -17,7 +17,7 @@ const Login = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post("/api/signin", {
+      const response = await axios.post("http://localhost:5000/signin", {
         email,
         password,
       });
@@ -61,12 +61,13 @@ const fetchDashboardData = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) throw new Error("No access token found!");
 
-    const response = await axios.get("/api/dashboard", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true, // Ensures cookies are sent
-    });
+    const response = await axios.post("http://localhost:5000/signin", {
+      email,
+      password,
+    }, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });    
 
     console.log("Dashboard Data:", response.data);
     return response.data;
