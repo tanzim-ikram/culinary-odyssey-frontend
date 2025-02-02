@@ -1,13 +1,17 @@
 "use client";
 
 import { HiOutlineSearch } from "react-icons/hi";
-import { FaBell, FaRegCommentDots, FaUserCircle } from "react-icons/fa";
+import { FaBell, FaRegCommentDots } from "react-icons/fa";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Topbar() {
+  const router = useRouter();
+
   return (
     <div className="flex justify-between items-center mb-6">
       {/* Search Bar */}
-      <div className="relative w-96">
+      <div className="relative w-full lg:w-1/2">
         <input
           type="text"
           placeholder="Search here"
@@ -20,12 +24,22 @@ export default function Topbar() {
       <div className="flex items-center gap-6">
         <FaBell className="text-gray-600 text-xl cursor-pointer" />
         <FaRegCommentDots className="text-gray-600 text-xl cursor-pointer" />
+
+        {/* User Profile */}
         <div className="flex items-center gap-2">
-          <FaUserCircle className="text-gray-600 text-2xl" />
           <div>
-            <p className="text-gray-700 font-semibold">John</p>
+            <p className="text-gray-700 font-semibold">John Doe</p>
             <p className="text-sm text-green-500">Online</p>
           </div>
+          <button onClick={() => router.push("/profile")}>
+            <Image
+              src="/co-logo.png" // Replace with actual image path
+              alt="User Avatar"
+              width={50}
+              height={50}
+              className="rounded-full cursor-pointer"
+            />
+          </button>
         </div>
       </div>
     </div>
