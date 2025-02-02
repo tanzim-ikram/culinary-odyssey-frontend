@@ -1,6 +1,9 @@
 "use client";
 
+import { FaBell, FaRegCommentDots, FaUserCircle } from "react-icons/fa";
+import { HiOutlineSearch } from "react-icons/hi";
 import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
 
 export default function Customer() {
   const customers = [
@@ -25,14 +28,18 @@ export default function Customer() {
 
       {/* Main Content */}
       <div className="flex-1 p-6">
-        
+        {/* Top Navbar */}
+        <Topbar />
 
         {/* Customer Table */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-[#464255] mb-6">
-          Customer Details
-        </h1>
-          <table className="w-full border border-gray-300 rounded-lg" style={{ fontFamily: '"Barlow", sans-serif' }}>
+          <h1 className="text-2xl font-bold text-[#464255] mb-6" style={{ fontFamily: '"Barlow", sans-serif' }}>
+            Customer Details
+          </h1>
+          <table
+            className="w-full border border-gray-300 rounded-lg"
+            style={{ fontFamily: '"Barlow", sans-serif' }}
+          >
             <thead>
               <tr className="bg-lime-200 text-left">
                 <th className="p-3 font-bold text-[#464255]">Customer Name</th>

@@ -69,7 +69,7 @@ function SidebarLink({ icon: Icon, text, href, active = false }: SidebarLinkProp
           active
             ? "bg-lime-200 text-[#464255] font-bold" // Active state highlighted
             : "text-[#464255]"
-        } hover:bg-lime-100 cursor-pointer`}
+        } hover:bg-lime-300 cursor-pointer hover:font-bold`}
       >
         <Icon className="text-xl" />
         <span>{text}</span>
