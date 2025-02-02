@@ -5,7 +5,11 @@ import { FaBell, FaRegCommentDots } from "react-icons/fa";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function Topbar() {
+interface TopbarProps {
+  userName: string;
+}
+
+export default function Topbar({ userName }: TopbarProps) {
   const router = useRouter();
 
   return (
@@ -26,20 +30,18 @@ export default function Topbar() {
         <FaRegCommentDots className="text-gray-600 text-xl cursor-pointer" />
 
         {/* User Profile */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push("/profile")}>
           <div>
-            <p className="text-gray-700 font-semibold">John Doe</p>
+            <p className="text-gray-700 font-semibold">{userName || "User"}</p>
             <p className="text-sm text-green-500">Online</p>
           </div>
-          <button onClick={() => router.push("/profile")}>
-            <Image
-              src="/co-logo.png" // Replace with actual image path
-              alt="User Avatar"
-              width={50}
-              height={50}
-              className="rounded-full cursor-pointer"
-            />
-          </button>
+          <Image
+            src="/co-logo.png" // Replace with actual user profile image path
+            alt="User Avatar"
+            width={50}
+            height={50}
+            className="rounded-full"
+          />
         </div>
       </div>
     </div>

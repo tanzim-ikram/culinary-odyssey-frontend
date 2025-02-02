@@ -94,7 +94,7 @@ export default function Dashboard() {
         style={{ fontFamily: '"Barlow", sans-serif' }}
       >
         {/* Top Navbar */}
-        <Topbar />
+        <Topbar userName={dashboardData?.user?.firstName || "User"} />
 
         {/* Dashboard Header */}
         <div className="flex justify-between items-center mb-6">
@@ -202,17 +202,23 @@ export default function Dashboard() {
         {/* Shopping List & Map Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Shopping List */}
+          
           <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">Shopping List</h2>
+          <div className="flex flex-row items-baseline justify-between">
+              <h2 className="text-xl font-bold mb-4">Shopping List</h2>
+              <a href="/shoppinglist" className="text-[#75A957] hover:underline">
+              View all
+              </a>
+            </div>
             <ul>
               {shoppingLists.length > 0 ? (
                 shoppingLists.map((item: any) => (
                   <li key={item.id} className="p-2 border-b">
-                    <label className="flex flex-row items-baseline justify-between">
-                      <div className="space-x-2">
+                    <label className="flex flex-row items-center justify-between">
+                      <div className="space-x-2 flex items-center">
                         <input
-                          type="checkbox"
-                          className="form-checkbox text-green-500"
+                          type="checkbox" 
+                          className="form-checkbox w-4 h-4"
                           onChange={() => handleDeleteItem(item.id)}
                         />
                         <span>{item.name}</span>

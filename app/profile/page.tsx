@@ -1,36 +1,129 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
-import { useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import Image from "next/image";
+import router from "next/router";
 
 export default function Profile() {
   const [profileImage, setProfileImage] = useState("/co-logo.png");
   const [formData, setFormData] = useState({
-    firstName: "John",
-    surname: "Doe",
+    firstName: "",
+    lastName: "",
+    role: "",
     gender: "",
-    phone: "+880 17XXXXXXXX",
-    email: "",
+    phoneNumber: "",
     country: "",
     dob: "",
-    city: "Dhaka",
-    education: "Higher Secondary Certificate (HSC)",
+    city: "",
+    educationalLevel: "",
   });
 
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+
+  // Fetch user data on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        console.error("No access token found! Redirecting to login...");
+        router.push("/login");
+        return;
+      }
+
+      try {
+        const response = await axios.get("http://localhost:5000/profile/me", {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true, // Ensures cookies are sent
+        });
+
+        const userData = response.data;
+        setFormData({
+          firstName: userData.firstName || "",
+          lastName: userData.lastName || "",
+          role: userData.role || "",
+          gender: userData.gender || "",
+          phoneNumber: userData.phoneNumber || "",
+          country: userData.country || "",
+          dob: userData.dob || "",
+          city: userData.city || "",
+          educationalLevel: userData.educationalLevel || "",
+        });
+
+        if (userData.profileImage) {
+          setProfileImage(userData.profileImage);
+        }
+      } catch (error) {
+        console.error("Profile fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handle image selection
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const imageUrl = URL.createObjectURL(event.target.files[0]);
       setProfileImage(imageUrl);
     }
   };
+
+  // Handle profile update
+  const handleUpdate = async () => {
+    setUpdating(true);
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      await axios.patch(
+        "http://localhost:5000/profile/me",
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          role: formData.role,
+          gender: formData.gender,
+          phoneNumber: formData.phoneNumber,
+          country: formData.country,
+          dob: formData.dob,
+          city: formData.city,
+          educationalLevel: formData.educationalLevel,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      );
+
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Profile update error:", error);
+      alert("Error updating profile!");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <p className="text-center mt-10 text-xl font-semibold">
+        Loading profile...
+      </p>
+    );
+  }
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -40,7 +133,7 @@ export default function Profile() {
       {/* Main Content */}
       <div className="flex-1 p-6">
         {/* Topbar Component */}
-        <Topbar />
+        <Topbar userName={formData.firstName} />
 
         {/* Profile Header */}
         <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -70,18 +163,25 @@ export default function Profile() {
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-[#464255]">{formData.firstName} {formData.surname}</h1>
+              <h1 className="text-2xl font-bold text-[#464255]">
+                {formData.firstName} {formData.lastName}
+              </h1>
+              <p className="text-lg text-gray-600">{formData.role}</p>
             </div>
           </div>
         </div>
 
         {/* Profile Form */}
         <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
-          <h2 className="text-xl font-semibold text-[#464255] mb-4">Edit Profile</h2>
+          <h2 className="text-xl font-semibold text-[#464255] mb-4">
+            Edit Profile
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* First Name & Surname */}
+            {/* First Name & Last Name */}
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">First Name</label>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                First Name
+              </label>
               <input
                 type="text"
                 name="firstName"
@@ -91,11 +191,13 @@ export default function Profile() {
               />
             </div>
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Surname</label>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                Last Name
+              </label>
               <input
                 type="text"
-                name="surname"
-                value={formData.surname}
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleChange}
                 className="w-full border border-gray-300 p-2 rounded-lg"
               />
@@ -103,53 +205,26 @@ export default function Profile() {
 
             {/* Gender */}
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Gender</label>
-              <select name="gender" value={formData.gender} onChange={handleChange} className="w-full border border-gray-300 p-2 rounded-lg">
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                Gender
+              </label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-2 rounded-lg"
+              >
                 <option value="">Select</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
             </div>
 
-            {/* Phone Number */}
-            <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Phone Number</label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full border border-gray-300 p-2 rounded-lg"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter Email"
-                className="w-full border border-gray-300 p-2 rounded-lg"
-              />
-            </div>
-
-            {/* Country */}
-            <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Country</label>
-              <select name="country" value={formData.country} onChange={handleChange} className="w-full border border-gray-300 p-2 rounded-lg">
-                <option value="">Select</option>
-                <option value="Bangladesh">Bangladesh</option>
-                <option value="United States">United States</option>
-                <option value="Canada">Canada</option>
-              </select>
-            </div>
-
             {/* Date of Birth */}
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Date of Birth</label>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                Date of Birth
+              </label>
               <input
                 type="date"
                 name="dob"
@@ -159,9 +234,25 @@ export default function Profile() {
               />
             </div>
 
+            {/* Phone Number */}
+            <div>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-2 rounded-lg"
+              />
+            </div>
+
             {/* City */}
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">City</label>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                City
+              </label>
               <input
                 type="text"
                 name="city"
@@ -171,20 +262,26 @@ export default function Profile() {
               />
             </div>
 
-            {/* Education Level */}
+            {/* Country */}
             <div>
-              <label className="block text-[#464255] text-sm font-medium mb-1">Education Level</label>
-              <select name="education" value={formData.education} onChange={handleChange} className="w-full border border-gray-300 p-2 rounded-lg">
-                <option>Higher Secondary Certificate (HSC)</option>
-                <option>Bachelor's Degree</option>
-                <option>Master's Degree</option>
-              </select>
+              <label className="block text-[#464255] text-sm font-medium mb-1">
+                Country
+              </label>
+              <input
+                type="text"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-2 rounded-lg"
+              />
             </div>
           </div>
 
-          {/* Save Button */}
           <div className="mt-6">
-            <button className="bg-lime-300 text-[#464255] font-bold px-6 py-2 rounded-lg shadow-md hover:bg-lime-200 transition">
+            <button
+              onClick={handleUpdate}
+              className="bg-lime-300 text-[#464255] font-bold px-6 py-2 rounded-lg shadow-md hover:bg-lime-200 transition"
+            >
               Save
             </button>
           </div>
