@@ -13,9 +13,9 @@ export default function OrderTable() {
   ];
 
   return (
-    <table className="w-full border-collapse border rounded-lg shadow-md" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "normal" }}>
+    <table className="w-full border-collapse border border-gray-300 rounded-lg shadow-md" style={{ fontFamily: '"Barlow", sans-serif' }}>
       <thead>
-        <tr className="bg-[#EEF4E6] text-left">
+        <tr className="bg-[#EEF4E6] text-center">
           <th className="p-3 font-semibold text-[#464255]">Customer Name</th>
           <th className="p-3 font-semibold text-[#464255]">Parcel ID</th>
           <th className="p-3 font-semibold text-[#464255]">Location</th>
@@ -29,7 +29,7 @@ export default function OrderTable() {
             <td className="p-3">{order.id}</td>
             <td className="p-3">{order.location}</td>
             <td className="p-3">
-              {/* ✅ Styled Delivery Status */}
+              {/* tyled Delivery Status */}
               <span
                 className={`px-3 py-1 text-sm font-medium rounded-full ${
                   order.status === "Delivered"

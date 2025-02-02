@@ -26,14 +26,14 @@ export default function OrderChart() {
         </div>
 
         {/* Save Report Button */}
-        <button className="flex items-center gap-2 border px-4 py-2 rounded-lg bg-lime-200 text-[#464255]  hover:border-[#464255]" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "bold" }}>
+        <button className="flex items-center gap-2 border px-4 py-2 rounded-lg bg-lime-200 text-[#464255]  hover:bg-lime-300 hover:border-[#464255]" style={{ fontFamily: '"Barlow", sans-serif', fontWeight: "bold" }}>
           <FaDownload />
           <span>Save Report</span>
         </button>
       </div>
 
       {/* Chart Container */}
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={460}>
         <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorBlue" x1="0" y1="0" x2="0" y2="1">

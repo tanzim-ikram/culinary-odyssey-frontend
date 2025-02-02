@@ -19,7 +19,7 @@ export default function ShoppingList() {
         <h2 className="text-xl font-bold text-[#464255]" style={{ fontFamily: '"Barlow", sans-serif' }}>
           Shopping list
         </h2>
-        <a href="#" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif' }}>
+        <a href="/shoppinglist" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif' }}>
           View all
         </a>
       </div>

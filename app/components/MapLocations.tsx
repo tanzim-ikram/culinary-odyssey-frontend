@@ -10,7 +10,7 @@ const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLaye
 const Marker = dynamic(() => import("react-leaflet").then(mod => mod.Marker), { ssr: false });
 const Popup = dynamic(() => import("react-leaflet").then(mod => mod.Popup), { ssr: false });
 
-// ✅ Fix missing marker icon by setting it manually
+// Fix missing marker icon by setting it manually
 const defaultIcon = L.icon({
   iconUrl: "/icons/pin.png",
   iconSize: [25, 25], // Default Leaflet size
@@ -34,7 +34,7 @@ export default function MapLocations() {
         <h2 className="text-xl font-bold text-[#464255]" style={{ fontFamily: '"Barlow", sans-serif' }}>
           Locations
         </h2>
-        <a href="#" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif' }}>
+        <a href="/map" className="text-[#75A957] hover:underline" style={{ fontFamily: '"Barlow", sans-serif' }}>
           Open map
         </a>
       </div>

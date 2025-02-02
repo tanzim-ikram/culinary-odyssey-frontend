@@ -52,7 +52,7 @@ export default function ShoppingList() {
           {/* Top Input Section */}
           <div className="bg-white p-6 rounded-lg shadow-lg mb-6 flex items-center gap-4 border-gray-300 border">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Item Name:
               </label>
               <input
@@ -65,7 +65,7 @@ export default function ShoppingList() {
             </div>
 
             <div className="w-1/4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-lg font-medium text-gray-700 mb-1">
                 Quantity:
               </label>
               <input
@@ -79,7 +79,7 @@ export default function ShoppingList() {
 
             <button
               onClick={addItem}
-              className="mt-6 px-6 py-3 bg-lime-200 text-[#464255] font-semibold rounded-md shadow-md hover:bg-lime-300 transition"
+              className="mt-6 px-6 py-3 bg-lime-200 text-[#464255] font-bold rounded-md shadow-md hover:bg-lime-300 transition"
             >
               Add
             </button>
