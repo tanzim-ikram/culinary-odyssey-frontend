@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import axios from "axios";
 import {
   FaChartPie,
   FaShoppingCart,
@@ -18,12 +19,39 @@ import { IconType } from "react-icons";
 interface SidebarLinkProps {
   icon: IconType;
   text: string;
-  href: string;
+  href?: string;
   active?: boolean;
+  onClick?: () => void;
 }
 
 export default function Sidebar() {
   const pathname = usePathname(); // Get current route to highlight active menu item
+  const router = useRouter();
+
+  // ✅ Handle Logout
+  const handleLogout = async () => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      console.warn("No access token found!");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/logout", {}, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
+
+      // ✅ Remove token and redirect to login
+      localStorage.removeItem("accessToken");
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Failed to log out. Please try again.");
+    }
+  };
 
   return (
     <aside className="w-64 bg-white p-6 shadow-lg">
@@ -93,30 +121,42 @@ export default function Sidebar() {
           href="/map"
           active={pathname === "/map"}
         />
+
+        {/* ✅ Logout Button */}
         <SidebarLink
           icon={FaSignOutAlt}
           text="Logout"
-          href="/logout"
-          active={pathname === "/logout"}
+          onClick={handleLogout} // ✅ Calls logout function
         />
       </nav>
     </aside>
   );
 }
 
-// Fix: Add 'active' prop to SidebarLink component
-function SidebarLink({
-  icon: Icon,
-  text,
-  href,
-  active = false,
-}: SidebarLinkProps) {
+// ✅ Sidebar Link Component
+function SidebarLink({ icon: Icon, text, href, active = false, onClick }: SidebarLinkProps) {
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className={`flex items-center gap-3 p-2 rounded-lg w-full text-left ${
+          active
+            ? "bg-lime-200 text-[#464255] font-bold"
+            : "text-[#464255]"
+        } hover:bg-lime-300 cursor-pointer hover:font-bold`}
+      >
+        <Icon className="text-xl" />
+        <span>{text}</span>
+      </button>
+    );
+  }
+
   return (
-    <Link href={href} passHref>
+    <Link href={href || "#"} passHref>
       <div
         className={`flex items-center gap-3 p-2 rounded-lg ${
           active
-            ? "bg-lime-200 text-[#464255] font-bold" // Active state highlighted
+            ? "bg-lime-200 text-[#464255] font-bold"
             : "text-[#464255]"
         } hover:bg-lime-300 cursor-pointer hover:font-bold`}
       >
