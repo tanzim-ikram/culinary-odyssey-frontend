@@ -109,12 +109,12 @@ export default function Sidebar() {
           href="/shoppinglist"
           active={pathname === "/shoppinglist"}
         />
-        <SidebarLink
+        {/* <SidebarLink
           icon={MdChat}
           text="Chat"
           href="/chat"
           active={pathname === "/chat"}
-        />
+        /> */}
         <SidebarLink
           icon={FaMapMarkerAlt}
           text="Map"

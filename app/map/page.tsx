@@ -24,6 +24,7 @@ const markerIcon = L.icon({
 // ✅ Dictionary of locations with lat/lng
 const locationsDict: { [key: string]: LatLngExpression } = {
   "Dhaka": [23.8103, 90.4125],
+  "Gazipur": [23.9905, 90.3877],
   "Chattogram": [22.3569, 91.7832],
   "Khulna": [22.8456, 89.5403],
   "Barishal": [22.7010, 90.3535],
