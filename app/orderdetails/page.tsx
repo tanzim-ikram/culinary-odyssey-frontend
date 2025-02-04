@@ -67,15 +67,15 @@ export default function OrderDetails() {
           <h1 className="text-2xl font-bold text-[#464255] mb-6" style={{ fontFamily: '"Barlow", sans-serif' }}>
             Order Details
           </h1>
-          <table className="w-full border border-gray-300 rounded-lg">
+          <table className="w-full border border-gray-300 rounded-lg text-center">
             <thead>
-              <tr className="bg-lime-200 text-left">
+              <tr className="bg-lime-200 text-center">
                 <th className="p-3 font-bold text-[#464255]">Customer Name</th>
                 <th className="p-3 font-bold text-[#464255]">Parcel ID</th>
                 <th className="p-3 font-bold text-[#464255]">Address</th>
                 <th className="p-3 font-bold text-[#464255]">Phone Number</th>
                 <th className="p-3 font-bold text-[#464255]">Delivery Status</th>
-                <th className="p-3 font-bold text-[#464255]">Contact</th>
+                {/* <th className="p-3 font-bold text-[#464255]">Contact</th> */}
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -102,11 +102,11 @@ export default function OrderDetails() {
                         {order.deliveryStatus}
                       </span>
                     </td>
-                    <td className="p-3">
+                    {/* <td className="p-3">
                       <button className="px-4 py-1 text-green-600 border border-green-600 rounded-full hover:bg-green-100">
                         Chat
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               ) : (
